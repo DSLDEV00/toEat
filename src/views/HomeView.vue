@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-
+import type {Dish, RecommendStatus } from '../types'
+import { restaurantStatusList } from '../constants'
 /**
  * Restaurant
  * 
@@ -9,26 +10,25 @@ import { ref } from 'vue'
  * State:string(e.g, "Want to Try" | "Must Try")
  * Dishes:array of dishe objects
  */
+
+
 interface Restaurant {
   name?: string
   address?: string
-  state?: string
+  state?: RecommendStatus
   dishes?: Dish[]
 }
-type RestaurantStatus = 'Want to Try' | 'Must Try' | 'Recommended' | 'Do Not Recommended' 
+
 const restaurantList = ref<Restaurant[]>([])
-const newRestaurant = ref<Restaurant>({})
-const statusList = [
-  'Want to Try',
-  'Must Try',
-  'Recommended',
-  'Do Not Recommended',
-]
+const newRestaurant = ref<Restaurant>({
+  state: 'Want to Try'
+})
+
 function addRestaurant() {
   restaurantList.value.push({
     name:newRestaurant.value.name,
-    address: '',
-    state:'Want to Try',
+    address: newRestaurant.value.address,
+    state: newRestaurant.value.state,
     dishes:[]
   }) //
 }
@@ -38,7 +38,7 @@ function addRestaurant() {
   <main>
     <!-- create a form that allows users to add a restaurant to list -->
     <pre>
-    {{ newRestaurant }}
+      {{ newRestaurant }}
     </pre>
     <form @submit.prevent="addRestaurant">
       <div>
@@ -52,7 +52,7 @@ function addRestaurant() {
       <div>
         <label for="restaurant-status">Restaurant Status</label>
         <select name="restaurant-status" id="restaurant-status" v-model="newRestaurant.state"> 
-          <option v-for="status in statusList" :value="status">{{ status }}</option>
+          <option v-for="status in restaurantStatusList" :value="status">{{ status }}</option>
         </select>
       </div>
       <button type="submit">Add Restaurant</button>
